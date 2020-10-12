@@ -7,3 +7,15 @@ services:
       - 80:80
     volumes:
       - ./app:/app
+  mysql:
+    image: mysql
+    restart: always
+    command: mysqld --default-authentication-plugin=mysql_native_password
+    environment: 
+      MYSQL_ROOT_PASSWORD: root
+    volumes: 
+      - mysql_data:/var/lib/mysql
+    ports: 
+      - 9990:3306
+volumes:
+  mysql_data:

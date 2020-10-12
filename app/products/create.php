@@ -1,11 +1,15 @@
 <?php 
     include "../includes/top-html.php"; 
     include "../includes/navbar-menu.php";
+    require_once dirname(__FILE__).'/../backend/dao/CategoryDAO.php';
+    require_once dirname(__FILE__).'/../backend/dao/SubsidiaryDAO.php';
+    $categories = CategoryDAO::get_all();
+    $subsidiaries = SubsidiaryDAO::get_all();
 ?>
 
 <h2 class="mb-5 mt-5 text-center">Nuevo Producto</h2>
 
-<form onsubmit="return validateCreateProduct()" method="POST" action="/backend/controllers/create-product.php">
+<form onsubmit="return validateCreateProduct()" method="POST" action="./_crud.php?action=create">
     <div class="form-row">
         <div class="form-group col-md-3">
             <label for="id">ID</label>
@@ -25,9 +29,9 @@
         <label for="category">Categoría</label>
         <select id="category" name="category" class="form-control">
             <option selected disabled>Choose...</option>
-            <option>Galletas</option>
-            <option>Chocolate</option>
-            <option>Cereal</option>
+            <?php foreach($categories as $category): ?>
+            <option value='<?php echo $category->id ?>'><?php echo $category->name ?></option>
+            <?php endforeach; ?>
         </select>
     </div>
     <div class="form-row">
@@ -35,33 +39,27 @@
             <label for="subsidiary">Sucursal 1</label>
             <select class="form-control" id="subsidiary1" name="subsidiary1">
                 <option selected disabled>Choose...</option>
-                <option>Pudahuel</option>
-                <option>Providencia</option>
-                <option>Santiago Centro</option>
-                <option>Maipú</option>
-                <option>Las Condes</option>
+                <?php foreach($subsidiaries as $subsidiary): ?>
+                <option value='<?php echo $subsidiary->id ?>'><?php echo $subsidiary->name ?></option>
+                <?php endforeach; ?>
             </select>
         </div>
         <div class="form-group col-md-4">
             <label for="subsidiary">Sucursal 2</label>
             <select class="form-control" id="subsidiary2" name="subsidiary2">
                 <option selected disabled>Choose...</option>
-                <option>Pudahuel</option>
-                <option>Providencia</option>
-                <option>Santiago Centro</option>
-                <option>Maipú</option>
-                <option>Las Condes</option>
+                <?php foreach($subsidiaries as $subsidiary): ?>
+                <option value='<?php echo $subsidiary->id ?>'><?php echo $subsidiary->name ?></option>
+                <?php endforeach; ?>
             </select>
         </div>
         <div class="form-group col-md-4">
             <label for="subsidiary">Sucursal 3</label>
             <select class="form-control" id="subsidiary3" name="subsidiary3">
                 <option selected disabled>Choose...</option>
-                <option>Pudahuel</option>
-                <option>Providencia</option>
-                <option>Santiago Centro</option>
-                <option>Maipú</option>
-                <option>Las Condes</option>
+                <?php foreach($subsidiaries as $subsidiary): ?>
+                <option value='<?php echo $subsidiary->id ?>'><?php echo $subsidiary->name ?></option>
+                <?php endforeach; ?>
             </select>
         </div>
     </div>
