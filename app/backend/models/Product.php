@@ -19,17 +19,5 @@
             $this->price = $price;
             $this->subsidiaries = $subsidiaries;
         }
-
-        public function print () {
-            echo "Se ha creado el producto <br>";
-            echo "------------------------<br>";
-            echo "Código: ".$this->code."<br>";
-            echo "Nombre: ".$this->name."<br>";
-            echo "Categoría: ".$this->category."<br>";
-            echo "Descripción: ".$this->description."<br>";
-            echo "Cantidad: ".$this->qty."<br>";
-            echo "Precio: ".$this->price."<br>";
-            echo "------------------------";
-        }
     }
 ?>
