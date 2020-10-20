@@ -10,7 +10,7 @@ class ProductDAO {
         try {
             $db = new Database();
             $dbconnection = $db->connect();
-            $stmt = $dbconnection->prepare("SELECT p.id, p.code, p.name, c.id as category_id, c.name as category_name, p.description, p.qty, p.price FROM product p LEFT JOIN category c ON p.category = c.id");
+            $stmt = $dbconnection->prepare("SELECT p.id, p.code, p.name, c.id as category_id, c.name as category_name, p.description, p.qty, p.active, p.price FROM product p LEFT JOIN category c ON p.category = c.id");
             $stmt->execute();
             $rows = $stmt->fetchAll();
             $stmt = null;
@@ -26,6 +26,7 @@ class ProductDAO {
                         new Category($row['category_id'], $row['category_name']),
                         $row['description'],
                         $row['qty'],
+                        $row['active'],
                         $row['price'],
                         $subsidiaries
                     )    
@@ -43,7 +44,7 @@ class ProductDAO {
         try {
             $db = new Database();
             $dbconnection = $db->connect();
-            $stmt = $dbconnection->prepare("SELECT p.id, p.code, p.name, c.id as category_id, c.name as category_name, p.description, p.qty, p.price FROM product p LEFT JOIN category c ON p.category = c.id WHERE p.id = :id");
+            $stmt = $dbconnection->prepare("SELECT p.id, p.code, p.name, c.id as category_id, c.name as category_name, p.description, p.qty, p.active, p.price FROM product p LEFT JOIN category c ON p.category = c.id WHERE p.id = :id");
             $stmt->execute(
                 [':id'=>$id]
             );
@@ -60,6 +61,7 @@ class ProductDAO {
                     new Category($row['category_id'], $row['category_name']),
                     $row['description'],
                     $row['qty'],
+                    $row['active'],
                     $row['price'],
                     $subsidiaries
                 );
@@ -75,7 +77,7 @@ class ProductDAO {
         try {
             $db = new Database();
             $dbconnection = $db->connect();
-            $stmt = $dbconnection->prepare("SELECT p.id, p.code, p.name, c.id as category_id, c.name as category_name, p.description, p.qty, p.price FROM product p LEFT JOIN category c ON p.category = c.id WHERE p.code = :code");
+            $stmt = $dbconnection->prepare("SELECT p.id, p.code, p.name, c.id as category_id, c.name as category_name, p.description, p.qty, p.active, p.price FROM product p LEFT JOIN category c ON p.category = c.id WHERE p.code = :code");
             $stmt->execute(
                 [':code'=>$code]
             );
@@ -92,6 +94,7 @@ class ProductDAO {
                     new Category($row['category_id'], $row['category_name']),
                     $row['description'],
                     $row['qty'],
+                    $row['active'],
                     $row['price'],
                     $subsidiaries
                 );
@@ -107,7 +110,7 @@ class ProductDAO {
         try {
             $db = new Database();
             $dbconnection = $db->connect();
-            $stmt = $dbconnection->prepare("SELECT p.id, p.code, p.name, c.id as category_id, c.name as category_name, p.description, p.qty, p.price FROM product p LEFT JOIN category c ON p.category = c.id  WHERE p.name LIKE :name");
+            $stmt = $dbconnection->prepare("SELECT p.id, p.code, p.name, c.id as category_id, c.name as category_name, p.description, p.qty, p.active, p.price FROM product p LEFT JOIN category c ON p.category = c.id  WHERE p.name LIKE :name");
             $stmt->execute(
                 [':name'=>'%'.$name.'%']
             );
@@ -125,6 +128,7 @@ class ProductDAO {
                         new Category($row['category_id'], $row['category_name']),
                         $row['description'],
                         $row['qty'],
+                        $row['active'],
                         $row['price'],
                         $subsidiaries
                     )    
@@ -142,7 +146,7 @@ class ProductDAO {
         try {
             $db = new Database();
             $dbconnection = $db->connect();
-            $stmt = $dbconnection->prepare("SELECT p.id, p.code, p.name, c.id as category_id, c.name as category_name, p.description, p.qty, p.price FROM product p LEFT JOIN product_subsidiary ps ON p.id = ps.product LEFT JOIN category c ON p.category = c.id WHERE ps.subsidiary = :subsidiary_id");
+            $stmt = $dbconnection->prepare("SELECT p.id, p.code, p.name, c.id as category_id, c.name as category_name, p.description, p.qty, p.active, p.price FROM product p LEFT JOIN product_subsidiary ps ON p.id = ps.product LEFT JOIN category c ON p.category = c.id WHERE ps.subsidiary = :subsidiary_id");
             $stmt->execute(
                 [':subsidiary_id'=>$subsidiary_id]
             );
@@ -160,6 +164,7 @@ class ProductDAO {
                         new Category($row['category_id'], $row['category_name']),
                         $row['description'],
                         $row['qty'],
+                        $row['active'],
                         $row['price'],
                         $subsidiaries
                     )    
@@ -178,8 +183,8 @@ class ProductDAO {
             $db = new Database();
             $dbconnection = $db->connect();
             $stmt = $dbconnection->prepare(
-                "INSERT INTO product (code, name, price, qty, category, description) VALUES
-                (:code, :name, :price, :qty, :category, :description)"
+                "INSERT INTO product (code, name, price, qty, active, category, description) VALUES
+                (:code, :name, :price, :qty, :active, :category, :description)"
             );
             $stmt->execute(
                 [
@@ -187,6 +192,7 @@ class ProductDAO {
                     ':name'=>$product->name,
                     ':price'=>$product->price,
                     ':qty'=>$product->qty,
+                    ':active'=>$product->active,
                     ':category'=>$product->category->id,
                     ':description'=>$product->description
                 ]
@@ -218,5 +224,72 @@ class ProductDAO {
         }
     }
 
+    static function edit($product) {
+        try {
+            $db = new Database();
+            $dbconnection = $db->connect();
+            $stmt = $dbconnection->prepare(
+                "UPDATE product SET name = :name, description = :description, price = :price, active = :active WHERE id = :id"
+            );
+            $stmt->execute(
+                [
+                    ':id'=>$product->id,
+                    ':name'=>$product->name,
+                    ':price'=>$product->price,
+                    ':description'=>$product->description,
+                    ':active'=>$product->active
+                ]
+            );
+            $stmt = null;
+            return true;
+        } catch(PDOException $e) {
+            echo "Error al insertar<br>";
+            echo $e->getMessage();
+            return false;
+        }
+    }
+
+    static function delete($id) {
+        try {
+            $db = new Database();
+            $dbconnection = $db->connect();
+            $stmt = $dbconnection->prepare(
+                "DELETE FROM product WHERE id = :id"
+            );
+            $stmt->execute(
+                [
+                    ':id'=>$id
+                ]
+            );
+            $stmt = null;
+            return $id;
+        } catch(PDOException $e) {
+            echo "Error al insertar<br>";
+            echo $e->getMessage();
+            return false;
+        }
+    }
+
+    static function delete_from_subsidiary($product_id, $subsidiary_id) {
+        try {
+            $db = new Database();
+            $dbconnection = $db->connect();
+            $stmt = $dbconnection->prepare(
+                "DELETE FROM product_subsidiary WHERE product = :product AND subsidiary = :subsidiary"
+            );
+            $stmt->execute(
+                [
+                    ':product'=>$product_id, 
+                    ':subsidiary'=>$subsidiary_id
+                ]
+            );
+            $stmt = null;
+            return $id;
+        } catch(PDOException $e) {
+            echo "Error al insertar<br>";
+            echo $e->getMessage();
+            return false;
+        }
+    }
 }
 

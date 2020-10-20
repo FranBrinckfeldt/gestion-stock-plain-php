@@ -9,6 +9,10 @@
 
     $subsidiaries = SubsidiaryDAO::get_all();
 
+    if(isset($_GET['subsidiary'])) {
+        $subsidiary = SubsidiaryDAO::get_by_id($_GET['subsidiary']);
+    }
+
     if(isset($_GET['code'])) {
         $product_by_code = ProductDAO::get_by_code($_GET['code']);
         $products = array($product_by_code);
@@ -23,7 +27,7 @@
 ?>
 
 <div class="mb-5 mt-5 text-center">
-    <h2 class="mb-4">Productos</h2>
+    <h2 class="mb-4">Productos <?php if (isset($_GET['subsidiary'])) { echo "de la sucursal ".$subsidiary->name; } ?></h2>
     <a type="button" href="/products/create.php" class="btn btn-primary btn-lg">Nuevo producto</a>
 </div>
 
@@ -80,6 +84,7 @@
             <th scope="col" class='text-center'>Categoría</th>
             <th scope="col" class='text-center'>Cantidad Sucursales</th>
             <th scope="col" class='text-center'>Descripción</th>
+            <th scope="col" class='text-center'>Estado</th>
             <th scope="col" class='text-center'>Cantidad</th>
             <th scope="col" class='text-center'>Precio de venta</th>
             <th scope="col" class='text-center'>Acciones</th>
@@ -95,38 +100,19 @@
             <td class='text-center'><?php echo $product->category->name ?></td>
             <td class='text-center'><?php echo count($product->subsidiaries) ?></td>
             <td class='text-truncate text-center'><?php echo $product->description ?></td>
+            <td class='text-center'><?php if ($product->active) { echo 'Activo'; } else { echo 'Inactivo'; } ?></td>
             <td class='text-center'><?php echo $product->qty ?></td>
             <td class='text-center'><?php echo $product->price ?></td>
             <td class='text-center'>
-                <a type="button" href="/products/edit.php" class="btn btn-warning btn-sm">Editar</a>
-                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#exampleModal">
-                    Eliminar
-                </button>
+                <a type="button" href="/products/edit.php?id=<?php echo $product->id ?>" class="btn btn-warning btn-sm">Editar</a>
+                <a type="button" class="btn btn-danger btn-sm" href="/products/_crud.php?action=delete&id=<?php echo $product->id ?><?php if (isset($_GET['subsidiary'])) { echo "&subsidiary=".$_GET['subsidiary']; } ?>">
+                    <?php if (isset($_GET['subsidiary'])) { echo "Eliminar de sucursal"; } else { echo "Eliminar"; } ?>
+                </a>
             </td>
         </tr>
     <?php endif; ?>
     <?php endforeach; ?>
     </tbody>
 </table>
-
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Confirmación de eliminar producto</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                ¿Estás seguro de que quieres eliminar este producto?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-danger">Confirmar</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <?php include "../includes/bottom-html.php"; ?>
