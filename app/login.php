@@ -1,6 +1,12 @@
 <?php 
+  session_start();
   include "includes/top-html.php"; 
   include "includes/navbar-no-menu.php";
+
+  if(!empty($_SESSION['email'])) {
+    header("location: /?email=".$_SESSION['email']);
+  }
+
 ?>
 
 <form id="loginForm" onsubmit="return validateLogin()" method="POST" action="backend/controllers/login.php">

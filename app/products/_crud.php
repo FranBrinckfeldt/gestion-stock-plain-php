@@ -1,4 +1,8 @@
 <?php
+    session_start();
+    if(empty($_SESSION['email'])) {
+        header("location: /login.php");
+    }
 require_once dirname(__FILE__).'/../backend/models/Product.php';
 require_once dirname(__FILE__).'/../backend/models/Category.php';
 require_once dirname(__FILE__).'/../backend/models/Subsidiary.php';

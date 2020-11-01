@@ -15,6 +15,9 @@
             <li class="nav-item">
                 <a class="nav-link" href="/users/index.php">Usuarios</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/backend/controllers/logout.php">Cerrar Sesión</a>
+            </li>
         </ul>
     </div>
 </nav>

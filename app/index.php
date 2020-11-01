@@ -1,4 +1,8 @@
 <?php 
+    session_start();
+    if(empty($_SESSION['email'])) {
+        header("location: /login.php");
+    }
     include "includes/top-html.php"; 
     include "includes/navbar-menu.php";
 ?>

@@ -63,7 +63,7 @@ class UserDAO {
         try {
             $db = new Database();
             $dbconnection = $db->connect();
-            $stmt = $dbconnection->prepare("SELECT id, email, firstname, lastname FROM user WHERE email LIKE :email");
+            $stmt = $dbconnection->prepare("SELECT id, email, firstname, lastname, password FROM user WHERE email LIKE :email");
             $stmt->execute(
                 [':email'=>'%'.$email.'%']
             );
@@ -76,7 +76,8 @@ class UserDAO {
                     $row['id'],
                     $row['email'],
                     $row['firstname'],
-                    $row['lastname']
+                    $row['lastname'],
+                    $row['password']
                 );
             }
         } catch(PDOException $e) {
